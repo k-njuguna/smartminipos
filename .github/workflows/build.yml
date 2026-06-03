@@ -11,18 +11,19 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
       
-      - name: Set up JDK 25
+      - name: Set up JDK 26
         uses: actions/setup-java@v4
         with:
-          java-version: '25'
+          java-version: '26'
           distribution: 'temurin'
       
       - name: Install WiX Toolset
         run: choco install wixtoolset -y
       
       - name: Build Windows MSI
-        # This triggers the jpackage goal registered by the badass-jlink-plugin
-        run: mvn clean jpackage
+        run: mvn clean javafx:jlink
+        
+        
         
       - name: Upload MSI Artifact
         uses: actions/upload-artifact@v4
