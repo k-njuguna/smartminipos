@@ -22,6 +22,16 @@
             <artifactId>javafx-fxml</artifactId>
             <version>${javafx.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
         
         <dependency>
             <groupId>org.xerial</groupId>
@@ -64,7 +74,7 @@
                         <type>msi</type>
                     </jpackage>
                     <noManPages>true</noManPages>
-                    <noDeps>true</noDeps>
+                    <noDeps>false</noDeps>
                     <stripDebug>true</stripDebug>
                     <compress>2</compress>
 
