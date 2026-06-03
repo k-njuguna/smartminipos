@@ -53,6 +53,10 @@
                     <jlinkZipName>SmartPOS-Runtime</jlinkZipName>
                     <jlinkImageName>SmartPOS</jlinkImageName>
                     <launcher>SmartPOS</launcher>
+                    <jpackage> 
+                        <name>SmartPOS</name>
+                        <type>msi</type>
+                    </jpackage>
                     <noManPages>true</noManPages>
                     <noDeps>true</noDeps>
                     <stripDebug>true</stripDebug>
