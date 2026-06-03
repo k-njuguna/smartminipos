@@ -44,29 +44,23 @@
                 <version>3.5.0</version>
             </plugin>
 
-            <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.8</version>
-                <configuration>
-                    <mainClass>${main.class}</mainClass>
-                    <jlinkZipName>SmartPOS-Runtime</jlinkZipName>
-                    <jlinkImageName>SmartPOS</jlinkImageName>
-                    <launcher>SmartPOS</launcher>
-                    <jpackage> 
-                        <name>SmartPOS</name>
-                        <type>msi</type>
-                    </jpackage>
-                    <noManPages>true</noManPages>
-                    <noDeps>true</noDeps>
-                    <stripDebug>true</stripDebug>
-                    <compress>2</compress>
-                    <winDirChooser>true</winDirChooser>
-                    <winMenu>true</winMenu>
-                    <winShortcut>true</winShortcut>
-                    <winUpgradeUuid>6d55fc4f-d57d-4557-abd2-d81f637b4125</winUpgradeUuid>
-                </configuration>
-            </plugin>
+<plugin>
+    <groupId>org.beryx</groupId>
+    <artifactId>badass-jlink-plugin</artifactId>
+    <version>2.29.0</version>
+    <extensions>true</extensions>
+    <configuration>
+        <mainClass>${main.class}</mainClass>
+        <jpackage>
+            <name>SmartPOS</name>
+            <type>msi</type>
+            <winDirChooser>true</winDirChooser>
+            <winMenu>true</winMenu>
+            <winShortcut>true</winShortcut>
+            <winUpgradeUuid>6d55fc4f-d57d-4557-abd2-d81f637b4125</winUpgradeUuid>
+        </jpackage>
+    </configuration>
+</plugin>
         </plugins>
     </build>
 </project>
