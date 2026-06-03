@@ -18,7 +18,7 @@ jobs:
           distribution: 'temurin'
       
       - name: Install WiX Toolset
-        run: choco install wixtoolset --version=3.11.2 -y
+        run: choco install wixtoolset -y --no-progress
       
       - name: Build Windows MSI
         run: mvn clean javafx:jpackage
