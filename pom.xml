@@ -10,8 +10,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>23</maven.compiler.release>
-        <javafx.version>23</javafx.version>
+        <maven.compiler.release>26</maven.compiler.release>
+        <javafx.version>26</javafx.version>
         <sqlite.version>3.45.3.0</sqlite.version>
         <main.class>com.smartpos.app.MainApp</main.class>
     </properties>
