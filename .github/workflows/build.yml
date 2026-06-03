@@ -1,5 +1,5 @@
 name: Build Windows MSI
-
+run: mvn clean javafx:jlink javafx:jpackage
 on:
   push:
     # Only trigger releases when you push a tag like v1.1.7
@@ -20,8 +20,11 @@ jobs:
           java-version: '26'
           distribution: 'temurin'
       
-      - name: Build with Maven
-        run: mvn clean javafx:jlink jlink:jpackage
+      - name: Install WiX Toolset
+        run: choco install wixtoolset -y
+        
+      - name: Build with MSI Maven
+        run: mvn clean javafx:jlink javafx:jpackage
         
       - name: Upload MSI Artifact
         uses: actions/upload-artifact@v4
