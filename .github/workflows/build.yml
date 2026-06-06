@@ -16,6 +16,7 @@ jobs:
         with:
           java-version: '25'
           distribution: 'temurin'
+          java-package: jdk
       
       - name: Install WiX Toolset
         run: choco install wixtoolset -y --no-progress
@@ -24,7 +25,14 @@ jobs:
         shell: powershell
         run: |
           $wixPath = "C:\Program Files (x86)\WiX Toolset v3.14\bin"
-          echo "$wixPath" >> $env:GITHUB_PATH
+          Add-Content -Path $env:GITHUB_PATH -Value $wixPath
+      - name: Verify WiX Availability
+        shell: powershell
+        run: |
+          Write-Host "Checking for candle.exe..."
+          Get-Command candle.exe -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source
+          Write-Host "Checking for light.exe..."
+          Get-Command light.exe -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source
       
       - name: Build Windows MSI
         run: mvn clean javafx:jpackage
