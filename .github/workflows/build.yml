@@ -19,6 +19,12 @@ jobs:
       
       - name: Install WiX Toolset
         run: choco install wixtoolset -y --no-progress
+        
+      - name: Add WiX to PATH
+        shell: powershell
+        run: |
+          $wixPath = "C:\Program Files (x86)\WiX Toolset v3.14\bin"
+          echo "$wixPath" >> $env:GITHUB_PATH
       
       - name: Build Windows MSI
         run: mvn clean javafx:jpackage
