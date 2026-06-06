@@ -42,14 +42,13 @@ jobs:
           Write-Host "Checking for light.exe..."
           Get-Command light.exe -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source
       
-      - name: Build Windows MSI
-        run: mvn clean javafx:jlink
+      - name: Build Jar
+        run: mvn clean package
         
       - name: Verify Runtime Image
         shell: powershell
         run: |
             Get-ChildItem target
-            Get-ChildItem target\SmartPOS
                
       - name: Create MSI installer
         shell: powershell
@@ -58,16 +57,17 @@ jobs:
             --type msi `
             --name SmartPOS `
             --input target `
-            --main-jar SmartPOS.jar ^
+            --main-jar SmartPOS.jar `
             --main-class com.smartpos.app.MainApp `
             --dest target\installer `
-            --vendor "SmartPOS"
-            --app-version 1.2.2`
+            --vendor "SmartPOS" `
+            --app-version 1.2.2 `
             --win-menu `
             --win-shortcut `
             --win-dir-chooser `
             --win-upgrade-uuid 6d55fc4f-d57d-4557-abd2-d81f637b4125
-
+      
+      
       - name: Upload MSI Artifact
         uses: actions/upload-artifact@v4
         with:
