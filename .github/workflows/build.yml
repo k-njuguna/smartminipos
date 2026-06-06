@@ -51,9 +51,19 @@ jobs:
             Get-ChildItem target
             Get-ChildItem target\SmartPOS
                
-        
+      - name: Create MSI
+        shell: powershell
+        run: |
+            jpackage `
+              --type msi `
+              --name SmartPOS `
+              --app-image target\SmartPOS `
+              --dest target\installer `
+              --vendor "SmartPOS"
+
       - name: Upload MSI Artifact
         uses: actions/upload-artifact@v4
         with:
           name: SmartPOS-Installer
-          path: target/jpackage/*.msi
+          path: target/installer/*.msi
+        
