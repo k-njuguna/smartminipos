@@ -73,4 +73,9 @@ jobs:
         with:
           name: SmartPOS-Installer
           path: target/installer/*.msi
-        
+      
+      - name: Debug installer output
+        shell: powershell
+        run: |
+          Write-Host "=== INSTALLER DIR ==="
+          Get-ChildItem target -Recurse
