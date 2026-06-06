@@ -43,9 +43,14 @@ jobs:
           Get-Command light.exe -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source
       
       - name: Build Windows MSI
-        run: mvn clean javafx:jpackage
+        run: mvn clean javafx:jlink
         
-        
+      - name: Verify Runtime Image
+        shell: powershell
+        run: |
+            Get-ChildItem target
+            Get-ChildItem target\SmartPOS
+               
         
       - name: Upload MSI Artifact
         uses: actions/upload-artifact@v4
