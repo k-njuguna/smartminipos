@@ -58,10 +58,11 @@ jobs:
             --type msi `
             --name SmartPOS `
             --input target `
-            --main-jar smartpos-desktop-1.1.6.jar `
+            --main-jar SmartPOS.jar ^
             --main-class com.smartpos.app.MainApp `
             --dest target\installer `
-            --vendor "SmartPOS" `
+            --vendor "SmartPOS"
+            --app-version 1.2.2`
             --win-menu `
             --win-shortcut `
             --win-dir-chooser `
