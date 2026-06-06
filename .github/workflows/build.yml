@@ -1,4 +1,4 @@
-name: Build Windows MSI
+name: Build Windows MSI and Publish
 
 on:
   push:
@@ -74,8 +74,18 @@ jobs:
           name: SmartPOS-Installer
           path: target/installer/*.msi
       
-      - name: Debug installer output
+      - name: Show installer output
         shell: powershell
         run: |
           Write-Host "=== INSTALLER DIR ==="
           Get-ChildItem target -Recurse
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.2.2
+          name: SmartPOS v1.2.2
+          
+          files: target/installer/*.msi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
