@@ -17,6 +17,14 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
           java-package: jdk
+          
+      - name: Verify Java Tools
+        shell: powershell
+        run: |
+          java --version
+          javac --version
+          jpackage --version
+          Get-Command jpackage | Select-Object -ExpandProperty Source
       
       - name: Install WiX Toolset
         run: choco install wixtoolset -y --no-progress
