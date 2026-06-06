@@ -3,6 +3,8 @@ name: Build Windows MSI and Publish
 on:
   push:
     branches: [ main ]
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -17,7 +19,7 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
           java-package: jdk
-          
+                    
       - name: Verify Java Tools
         shell: powershell
         run: |
@@ -42,6 +44,14 @@ jobs:
           Write-Host "Checking for light.exe..."
           Get-Command light.exe -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source
       
+      - name: Get version from pom.xml
+        shell: powershell
+        run: |
+          [xml]$pom = Get-Content pom.xml
+          $version = $pom.project.version
+          echo "APP_VERSION=$version" >> $env:GITHUB_ENV
+          Write-Host "Detected version: $version"
+      
       - name: Build Jar
         run: mvn clean package
         
@@ -61,7 +71,7 @@ jobs:
             --main-class com.smartpos.app.MainApp `
             --dest target\installer `
             --vendor "SmartPOS" `
-            --app-version 1.2.2 `
+            --app-version $env:APP_VERSION `
             --win-menu `
             --win-shortcut `
             --win-dir-chooser `
@@ -83,8 +93,8 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.2.2
-          name: SmartPOS v1.2.2
+          tag_name: v${{ env.APP_VERSION }}
+          name: SmartPOS v${{ env.APP_VERSION }}
           
           files: target/installer/*.msi
         env:
