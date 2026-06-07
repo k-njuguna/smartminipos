@@ -16,6 +16,7 @@
         <javafx.version>25</javafx.version>
         <sqlite.version>3.45.3.0</sqlite.version>
         <main.class>com.smartpos.app.MainApp</main.class>
+        <upgrade.code>{dd52e6fe-27c2-4bb2-ae80-0524839b388b}</upgrade.code>
     </properties>
 
     <dependencies>
