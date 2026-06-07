@@ -1,0 +1,101 @@
+name: Build Windows MSI and Publish
+
+on:
+  push:
+    branches: [ main ]
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          java-package: jdk
+                    
+      - name: Verify Java Tools
+        shell: powershell
+        run: |
+          java --version
+          javac --version
+          jpackage --version
+          Get-Command jpackage | Select-Object -ExpandProperty Source
+      
+      - name: Install WiX Toolset
+        run: choco install wixtoolset -y --no-progress
+        
+      - name: Add WiX to PATH
+        shell: powershell
+        run: |
+          $wixPath = "C:\Program Files (x86)\WiX Toolset v3.14\bin"
+          Add-Content -Path $env:GITHUB_PATH -Value $wixPath
+      - name: Verify WiX Availability
+        shell: powershell
+        run: |
+          Write-Host "Checking for candle.exe..."
+          Get-Command candle.exe -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source
+          Write-Host "Checking for light.exe..."
+          Get-Command light.exe -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source
+      
+      - name: Get version from pom.xml
+        shell: powershell
+        run: |
+          [xml]$pom = Get-Content pom.xml
+          $version = $pom.project.version
+          echo "APP_VERSION=$version" >> $env:GITHUB_ENV
+          Write-Host "Detected version: $version"
+      
+      - name: Build Jar
+        run: mvn clean package
+        
+      - name: Verify Runtime Image
+        shell: powershell
+        run: |
+            Get-ChildItem target
+               
+      - name: Create MSI installer
+        shell: powershell
+        run: |
+          jpackage `
+            --type msi `
+            --name SmartPOS `
+            --input target `
+            --main-jar SmartPOS.jar `
+            --main-class com.smartpos.app.MainApp `
+            --dest target\installer `
+            --vendor "SmartPOS" `
+            --app-version $env:APP_VERSION `
+            --win-menu `
+            --win-shortcut `
+            --win-dir-chooser `
+            --win-upgrade-uuid 6d55fc4f-d57d-4557-abd2-d81f637b4125
+      
+      
+      - name: Upload MSI Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SmartPOS-Installer
+          path: target/installer/*.msi
+      
+      - name: Show installer output
+        shell: powershell
+        run: |
+          Write-Host "=== INSTALLER DIR ==="
+          Get-ChildItem target -Recurse
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.APP_VERSION }}
+          name: SmartPOS v${{ env.APP_VERSION }}
+          
+          files: target/installer/*.msi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
