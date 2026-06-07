@@ -21,6 +21,7 @@ public final class DatabaseManager {
 
     public static Path getDatabasePath() { return DB_PATH; }
 
+
     public static Connection getConnection() throws SQLException {
         File dbFolder = DB_PATH.getParent().toFile();
         if (!dbFolder.exists()) dbFolder.mkdirs();
@@ -35,6 +36,7 @@ public final class DatabaseManager {
             
             st.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE NOT NULL, password TEXT NOT NULL, role TEXT NOT NULL)");
             
+
             st.execute("""
                 CREATE TABLE IF NOT EXISTS products (
                   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -49,6 +51,7 @@ public final class DatabaseManager {
 
             st.execute("CREATE INDEX IF NOT EXISTS idx_products_name ON products(name)");
             
+
             st.execute("""
                 CREATE TABLE IF NOT EXISTS sales (
                   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -124,7 +127,6 @@ public final class DatabaseManager {
             st.execute("CREATE TABLE IF NOT EXISTS payments (id INTEGER PRIMARY KEY AUTOINCREMENT, sale_id INTEGER NOT NULL, method TEXT NOT NULL, amount REAL NOT NULL, FOREIGN KEY(sale_id) REFERENCES sales(id))");
             st.execute("CREATE TABLE IF NOT EXISTS activity_log (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, action TEXT NOT NULL, timestamp TEXT NOT NULL, FOREIGN KEY(user_id) REFERENCES users(id))");
             st.execute("CREATE TABLE IF NOT EXISTS app_settings (key TEXT PRIMARY KEY, value TEXT NOT NULL)");
-            
 
             handleSchemaMigrations(conn);
             
@@ -145,6 +147,7 @@ public final class DatabaseManager {
                 if ("low_stock_threshold".equals(rsProducts.getString("name"))) hasThreshold = true;
             }
             if (!hasThreshold) { st.execute("ALTER TABLE products ADD COLUMN low_stock_threshold INTEGER DEFAULT NULL"); }
+
         }
     }
 

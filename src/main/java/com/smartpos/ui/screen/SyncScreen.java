@@ -127,6 +127,7 @@ public class SyncScreen {
         setupAutorefreshEngine(statusLabel, lastSyncLabel, syncNowBtn);
 
         return root;
+
     }
 
     /**

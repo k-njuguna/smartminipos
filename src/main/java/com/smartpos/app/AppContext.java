@@ -24,20 +24,26 @@ public class AppContext {
     private final ActivityLogService activityLogService = new ActivityLogService();
     private final BackupService backupService = new BackupService();
     
+
     private final ExecutorService executor;
     
+    // Managed thread pool for asynchronous background tasks
+
     private volatile SyncService syncService;
 
     private User currentUser;
     private volatile boolean transactionInProgress = false; 
+
 
     private final StringProperty shopName = new SimpleStringProperty();
     private final StringProperty selectedLayoutMode = new SimpleStringProperty("Standard");
     private final StringProperty activeTerminalTheme = new SimpleStringProperty("light");
 
     public AppContext() {
+
         com.smartpos.db.DatabaseManager.initializeSchema();
         
+
         this.executor = Executors.newCachedThreadPool(runnable -> {
             Thread thread = new Thread(runnable);
             thread.setDaemon(true);
@@ -47,6 +53,11 @@ public class AppContext {
 
         this.shopName.set(LicenseManager.getShopName());
 
+
+        // Initialize shop name from license file
+        this.shopName.set(LicenseManager.getShopName());
+
+        // Initialize properties safely matching your native settingsService.getAll() map layout
         try {
             Map<String, String> savedConfig = settingsService.getAll();
             
@@ -60,9 +71,11 @@ public class AppContext {
         }
     }
 
+
     public StringProperty shopNameProperty() { return shopName; }
     public String getShopName() { return shopName.get(); }
     public void setShopName(String name) { this.shopName.set(name); }
+
 
     public ExecutorService getExecutor() { 
         return executor; 
@@ -76,6 +89,7 @@ public class AppContext {
     public ActivityLogService activityLogService() { return activityLogService; }
     public BackupService backupService() { return backupService; }
     
+
     public StringProperty selectedLayoutModeProperty() { 
         return selectedLayoutMode; 
     }
@@ -97,6 +111,7 @@ public class AppContext {
         this.activeTerminalTheme.set(theme);
         executor.execute(() -> settingsService.set("theme", theme));
     }
+
 
     public SyncService syncService() {
         SyncService localRef = syncService;
@@ -120,6 +135,9 @@ public class AppContext {
     public void setCurrentUser(User currentUser) { this.currentUser = currentUser; }
     public void logout() { this.currentUser = null; }
 
+
+
+
     public boolean isTransactionInProgress() {
         return transactionInProgress;
     }
@@ -127,6 +145,7 @@ public class AppContext {
     public void setTransactionInProgress(boolean inProgress) {
         this.transactionInProgress = inProgress;
     }
+
 
     public void shutdown() {
         executor.shutdown();

@@ -123,7 +123,9 @@ public class UserManagementScreen {
         root.getChildren().addAll(title, columnsContainer, userFeedback);
         ScrollPane sp = new ScrollPane(root);
         sp.setFitToWidth(true);
+
         return sp;
+
     }
 
     private void refreshDropdowns(ComboBox<User> p1, ComboBox<User> p2) {

@@ -25,6 +25,7 @@ public class SceneManager {
             // Placeholder for CSS link
         } catch (NullPointerException e) {
             System.err.println("WARNING: App stylesheets framework path '/styles/app.css' missing.");
+
         }
         
         this.stage.setScene(scene);
@@ -39,6 +40,7 @@ public class SceneManager {
         }
 
         // 1. Build the screen content
+
         Parent screen = switch (type) {
             case REGISTRATION -> new RegistrationScreen(context, this).build();
             case LOGIN -> new LoginScreen(context, this).build();
@@ -56,6 +58,7 @@ public class SceneManager {
 
         // 3. Update the UI
         root.setCenter(displayContent);
+
         
         applyTheme();
         stage.show();
@@ -64,16 +67,18 @@ public class SceneManager {
     private boolean isProtectedScreen(ScreenType type) {
         return switch (type) {
             case PRODUCTS, REPORTS, SYNC, SETTINGS, USER_MANAGEMENT, CREDIT_MANAGEMENT -> true;
+
             default -> false;
         };
     }
+
 
     private boolean isAdminAuthorized() {
         return context.currentUser() != null && context.currentUser().role() == Role.ADMIN;
     }
 
     public Parent withAdminNav(Parent content) {
-        // Only wrap in AdminShell if the user is authorized
+
         if (!isAdminAuthorized()) {
             return content;
         }

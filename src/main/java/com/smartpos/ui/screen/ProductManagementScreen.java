@@ -84,6 +84,7 @@ public class ProductManagementScreen {
 
         refresh(); // Hydrate data from sqlite database service
         return root;
+
     }
 
     private void setupTable() {

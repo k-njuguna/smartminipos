@@ -20,6 +20,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.util.Pair;
 
+
 public class MainPosScreen {
     private final AppContext context;
     private final SceneManager sceneManager;
@@ -27,6 +28,7 @@ public class MainPosScreen {
     private final Label totalLabel = new Label("Total: 0.00");
     private final Label dailyTotalLabel = new Label("Today's Sales: 0.00");
     private final Label feedback = new Label();
+
     private final List<Button> quickButtons = new ArrayList<>();
     private final List<Product> quickProducts = new ArrayList<>();
 
@@ -41,6 +43,7 @@ public class MainPosScreen {
 
         // Using VBox as root to avoid nesting a BorderPane inside the AdminShell's BorderPane
         VBox root = new VBox(10);
+
         root.setPadding(new Insets(12));
         
         HBox header = new HBox(10);
@@ -52,6 +55,7 @@ public class MainPosScreen {
         
         Region spacer1 = new Region(); Region spacer2 = new Region();
         Region spacer3 = new Region(); Region spacer4 = new Region();
+
         HBox.setHgrow(spacer1, Priority.ALWAYS);
         HBox.setHgrow(spacer2, Priority.ALWAYS);
         HBox.setHgrow(spacer3, Priority.ALWAYS);
@@ -66,6 +70,7 @@ public class MainPosScreen {
 
         Label userGreeting = new Label("Welcome: " + context.currentUser().username());
         Label title = new Label("SMART POS MAIN PAGE:\t"+context.getShopName());
+
         Label lowStockAlert = new Label();
         Label cartLabel = new Label("Items on cart");
         Label leftPaneTitle = new Label("Sell Items using entry");
@@ -77,6 +82,7 @@ public class MainPosScreen {
         leftPaneTitle.setStyle("-fx-font-size: 20px;");
         righttPaneTitle.setStyle("-fx-font-size: 20px;");
         feedback.getStyleClass().add("error"); 
+
         dailyTotalLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #555555; -fx-font-weight: normal;");
 
         TableView<CartItem> table = new TableView<>(cart);
@@ -97,6 +103,7 @@ public class MainPosScreen {
         matchedProducts.setMaxWidth(Double.MAX_VALUE);
         TextField qtyInput = new TextField(); qtyInput.setPromptText("Quantity");
         Button addToCartButton = new Button("Add to Cart");
+
         ComboBox<String> paymentMethod = new ComboBox<>();
         paymentMethod.getItems().addAll("CASH", "CARD", "MOBILE");
         paymentMethod.setValue("CASH");
@@ -135,6 +142,7 @@ public class MainPosScreen {
         clearCart.prefWidthProperty().bind(footer.widthProperty().multiply(0.20));
 
         rightPane.getChildren().add(righttPaneTitle);
+
         for (int i = 0; i < 6; i++) {
             Button btn = new Button("Empty Row Slot");
             btn.setPrefSize(100, 80);
@@ -149,6 +157,7 @@ public class MainPosScreen {
 
         loadQuickButtons(); recalcDailyTotal();
         searchInput.textProperty().addListener((obs, old, n) -> updateProductMatches(searchInput, matchedProducts, feedback));
+
         addToCartButton.setOnAction(e -> {
             try {
                 int qty = Integer.parseInt(qtyInput.getText().trim());
@@ -238,6 +247,7 @@ public class MainPosScreen {
         m.getItems().setAll(matches);
         if (matches.isEmpty()) f.setText("No products found.");
         else { m.getSelectionModel().selectFirst(); m.show(); f.setText("Found " + matches.size() + " matches."); }
+
     }
 
     private void loadQuickButtons() {
@@ -249,6 +259,7 @@ public class MainPosScreen {
             if (!items.isEmpty()) {
                 Product p = items.get(0); quickProducts.set(i, p);
                 quickButtons.get(i).setText(p.getName()); quickButtons.get(i).setDisable(false);
+
             }
         }
     }

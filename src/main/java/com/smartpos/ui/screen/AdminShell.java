@@ -12,9 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 
-/**
- * The persistent application shell providing navigation and structure.
- */
+
 public class AdminShell {
     private final AppContext context;
     private final SceneManager sceneManager;
@@ -25,6 +23,7 @@ public class AdminShell {
         this.sceneManager = sceneManager;
         this.content = content;
     }
+
 
     public Parent build() {
         BorderPane root = new BorderPane();
@@ -56,12 +55,14 @@ public class AdminShell {
         // Logout Button
         Button logout = new Button("Logout");
         logout.getStyleClass().add("button-danger");
+
         logout.setOnAction(e -> {
             context.logout();
             sceneManager.show(ScreenType.LOGIN);
         });
 
        nav.getChildren().addAll(title, pos, products, reports, credits, sync, settings, users, spacer, logout);
+
         
         root.setTop(nav);
         return root;
@@ -75,4 +76,5 @@ public class AdminShell {
         btn.setOnAction(e -> sceneManager.show(type));
         return btn;
     }
+
 }

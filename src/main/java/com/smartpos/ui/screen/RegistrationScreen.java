@@ -1,4 +1,3 @@
-
 package com.smartpos.ui.screen;
 
 import com.smartpos.app.AppContext;

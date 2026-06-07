@@ -3,6 +3,7 @@ module com.smartpos {
     requires java.net.http;
     requires org.xerial.sqlitejdbc;
 
+
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.graphics;

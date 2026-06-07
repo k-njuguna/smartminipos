@@ -88,6 +88,7 @@ public class SalesReportsScreen {
         ScrollPane mainScroll = new ScrollPane(root);
         mainScroll.setFitToWidth(true);
         return mainScroll;
+
     }
 
     private void refreshSales(TableView<ReportService.SalesLine> table, String date, Label status, Label totalSalesLabel, VBox userBreakdownBox) {

@@ -10,4 +10,5 @@ public enum ScreenType {
     USER_MANAGEMENT,
     REGISTRATION,
     CREDIT_MANAGEMENT
+
 }

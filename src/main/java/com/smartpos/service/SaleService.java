@@ -6,6 +6,7 @@ import com.smartpos.model.User;
 import com.smartpos.model.Credit;
 import com.smartpos.model.Product;
 
+
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,6 +27,7 @@ public class SaleService {
 
         if (cartItems == null || cartItems.isEmpty()) {
             throw new IllegalArgumentException("Cart is empty.");
+
         }
 
         String saleSql = "INSERT INTO sales(total, timestamp, user_id, is_synced) VALUES (?,?,?,0)";
@@ -60,9 +62,11 @@ public class SaleService {
                      PreparedStatement stockPs = conn.prepareStatement(stockSql);
                      PreparedStatement movePs = conn.prepareStatement(movementSql)) {
 
+
                     for (CartItem item : cartItems) {
                         long productId = item.getProduct().getId();
                         int qty = item.getQuantity();
+
 
                         itemPs.setLong(1, saleId);
                         itemPs.setLong(2, productId);
@@ -316,4 +320,5 @@ public class SaleService {
     }
     return list;
 }
+
 }

@@ -247,6 +247,7 @@ public class SettingsScreen {
             new Separator(), 
             lowStockHeading, thresholdField, saveThreshold, thresholdFeedback,
             pinHeading,pinField, savePin, pinFeedback
+
         );
 
         columnsContainer.getChildren().addAll(col1, col2, col3);
@@ -255,6 +256,7 @@ public class SettingsScreen {
         ScrollPane sp = new ScrollPane(root);
         sp.setFitToWidth(true);
         return sp;
+
     }
 
     private VBox createStyledColumn(String title) {
