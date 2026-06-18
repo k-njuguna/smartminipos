@@ -77,17 +77,18 @@ jobs:
             --win-dir-chooser `
             --win-upgrade-uuid 6d55fc4f-d57d-4557-abd2-d81f637b4125
           jpackage 
-            --type exe 
-            --name SmartPOS 
-            --input target 
-            --main-jar SmartPOS.jar 
-            --main-class com.smartpos.app.MainApp 
-            --dest target/installer 
-            --vendor "SmartPOS" 
-            --app-version $env:APP_VERSION 
-            --win-menu 
-            --win-shortcut 
-            --win-dir-chooser    
+            --type exe `
+            --name SmartPOS `
+            --input target `
+            --main-jar SmartPOS.jar `
+            --main-class com.smartpos.app.MainApp `
+            --dest target/installer `
+            --vendor "SmartPOS" `
+            --app-version $env:APP_VERSION `
+            --win-menu `
+            --win-shortcut `
+            --win-dir-chooser `
+            --win-upgrade-uuid 6d55fc4f-d57d-4557-abd2-d81f637b4125
             
       - name: Upload MSI Artifact
         uses: actions/upload-artifact@v4
