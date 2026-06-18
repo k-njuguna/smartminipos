@@ -76,14 +76,27 @@ jobs:
             --win-shortcut `
             --win-dir-chooser `
             --win-upgrade-uuid 6d55fc4f-d57d-4557-abd2-d81f637b4125
-      
-      
+          jpackage 
+            --type exe 
+            --name SmartPOS 
+            --input target 
+            --main-jar SmartPOS.jar 
+            --main-class com.smartpos.app.MainApp 
+            --dest target/installer 
+            --vendor "SmartPOS" 
+            --app-version $env:APP_VERSION 
+            --win-menu 
+            --win-shortcut 
+            --win-dir-chooser    
+            
       - name: Upload MSI Artifact
         uses: actions/upload-artifact@v4
         with:
           name: SmartPOS-Installer
           path: target/installer/*.msi
-      
+                target/installer/*.exe
+                target/*.jar   
+                
       - name: Show installer output
         shell: powershell
         run: |
@@ -97,5 +110,7 @@ jobs:
           name: SmartPOS v${{ env.APP_VERSION }}
           
           files: target/installer/*.msi
+                 target/installer/*.exe
+                 target/*.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
