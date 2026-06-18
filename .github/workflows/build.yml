@@ -76,7 +76,7 @@ jobs:
             --win-shortcut `
             --win-dir-chooser `
             --win-upgrade-uuid 6d55fc4f-d57d-4557-abd2-d81f637b4125
-          jpackage 
+          jpackage `
             --type exe `
             --name SmartPOS `
             --input target `
