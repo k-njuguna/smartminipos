@@ -7,7 +7,7 @@
 
     <groupId>com.smartpos</groupId>
     <artifactId>smartpos-desktop</artifactId>
-    <version>1.3.1</version> <!--Major change.db schem cnhange. smaller changes-->
+    <version>1.3.1R</version> <!--Major change.db schem cnhange. smaller changes-->
 
 
     <properties>
@@ -98,8 +98,10 @@
                     </addModules>
                 </configuration>
             </plugin>
+            
 
         </plugins>
+        
     </build>
 
 </project>

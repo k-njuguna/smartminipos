@@ -53,7 +53,9 @@ jobs:
           Write-Host "Detected version: $version"
       
       - name: Build Jar
-        run: mvn clean package
+        run: mvn clean package      
+      - name: Build Runtime Image
+        run: mvn javafx:jlink
         
       - name: Verify Runtime Image
         shell: powershell
@@ -75,7 +77,8 @@ jobs:
             --win-menu `
             --win-shortcut `
             --win-dir-chooser `
-            --win-upgrade-uuid 6d55fc4f-d57d-4557-abd2-d81f637b4125
+            --win-upgrade-uuid 6d55fc4f-d57d-4557-abd2-d81f637b4125 `
+            --runtime-image target\SmartPOS
           jpackage `
             --type exe `
             --name SmartPOS `
@@ -88,7 +91,8 @@ jobs:
             --win-menu `
             --win-shortcut `
             --win-dir-chooser `
-            --win-upgrade-uuid 6d55fc4f-d57d-4557-abd2-d81f637b4125
+            --win-upgrade-uuid 6d55fc4f-d57d-4557-abd2-d81f637b4125 `
+            --runtime-image target\SmartPOS
             
       - name: Upload MSI Artifact
         uses: actions/upload-artifact@v4
