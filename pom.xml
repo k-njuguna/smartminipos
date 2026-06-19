@@ -90,6 +90,12 @@
                     <noManPages>true</noManPages>
                     <stripDebug>true</stripDebug>
                     <compress>2</compress>
+                    
+                    <addModules>
+                        <addModule>javafx.controls</addModule>
+                        <addModule>javafx.fxml</addModule>
+                        <addModule>javafx.graphics</addModule>
+                    </addModules>
                 </configuration>
             </plugin>
 
