@@ -7,14 +7,14 @@
 
     <groupId>com.smartpos</groupId>
     <artifactId>smartpos-desktop</artifactId>
-    <version>1.3.1R</version> <!--Major change.db schem cnhange. smaller changes-->
+    <version>1.3.2</version> <!--Major change.db schem cnhange. smaller changes-->
 
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>25</maven.compiler.release>
-        <javafx.version>25</javafx.version>
-        <sqlite.version>3.45.3.0</sqlite.version>
+        <maven.compiler.release>21</maven.compiler.release>
+        <javafx.version>21</javafx.version>
+        <sqlite.version>3.50.3.0</sqlite.version>
         <main.class>com.smartpos.app.MainApp</main.class>
         <upgrade.code>{dd52e6fe-27c2-4bb2-ae80-0524839b388b}</upgrade.code>
     </properties>
@@ -85,7 +85,7 @@
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.8</version>
+                <version>0.0.10</version>
 
                 <configuration>
                     <mainClass>${main.class}</mainClass>
