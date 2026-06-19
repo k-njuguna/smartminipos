@@ -53,7 +53,8 @@ jobs:
           Write-Host "Detected version: $version"
       
          
-      - name: Build Runtime Image
+      - name: Build Runtime Image and jar
+        run: mvn clean package -U
         run: mvn javafx:jlink -U
         
       - name: Verify Runtime Image
