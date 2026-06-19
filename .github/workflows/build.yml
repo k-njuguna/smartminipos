@@ -51,10 +51,10 @@ jobs:
           $version = $pom.project.version
           echo "APP_VERSION=$version" >> $env:GITHUB_ENV
           Write-Host "Detected version: $version"
-      
-         
+            
       - name: Build Runtime Image and jar
-        run: mvn clean package -U
+        run: mvn clean package -U  
+      - name: Build Runtime Image and jar
         run: mvn javafx:jlink -U
         
       - name: Verify Runtime Image
