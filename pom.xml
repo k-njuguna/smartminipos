@@ -7,9 +7,10 @@
 
     <groupId>com.smartpos</groupId>
     <artifactId>smartpos-desktop</artifactId>
-    <version>1.3.2.1</version> <!--Major change.db schem cnhange. smaller changes-->
+    <!--The version of the app | controls all the other versions| major changes.db changes.small changes-->
+    <version>1.4.1</version> <!--Major change.db schem cnhange. smaller changes-->
 
-
+    <!-- java compiler version | The main class | update/upgrade code-->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>21</maven.compiler.release>
@@ -63,7 +64,7 @@
 
     <build>
 
-        <!-- IMPORTANT: stable jar name for jpackage -->
+        <!-- jar name for jpackage -->
         <finalName>SmartPOS</finalName>
 
         <plugins>
@@ -82,7 +83,7 @@
                 <version>3.5.0</version>
             </plugin>
 
-            <!-- JavaFX (ONLY for run + jlink) -->
+            <!-- JavaFX (run + jlink) -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -95,7 +96,7 @@
                     <jlinkImageName>SmartPOS</jlinkImageName>
                     <jlinkZipName>SmartPOS-Runtime</jlinkZipName>
 
-                    <!-- optional run helper -->
+                    <!-- run helper -->
                     <launcher>SmartPOS</launcher>
 
                     <noManPages>true</noManPages>

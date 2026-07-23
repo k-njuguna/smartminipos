@@ -8,15 +8,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class ProductService {
 
     private static final DateTimeFormatter ISO_DATETIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final ActivityLogService activityLogService = new ActivityLogService();
 
-    public List<Product> findAll() {
-        String sql = "SELECT id, name, price, stock, low_stock_threshold FROM products ORDER BY id DESC";
+    public List<Product> findActive() {
+        String sql = "SELECT id, name, price, stock, low_stock_threshold, status FROM products WHERE status=1 ORDER BY id DESC";
         List<Product> products = new ArrayList<>();
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -26,12 +25,28 @@ public class ProductService {
             }
             return products;
         } catch (SQLException ex) {
+            throw new RuntimeException("Failed to fetch active products layout dictionary.", ex);
+        }
+    }
+    
+    public List<Product> findAll() {
+        String sql = "SELECT id, name, price, stock, low_stock_threshold, status FROM products ORDER BY id DESC";
+        List<Product> products = new ArrayList<>();
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                products.add(readProduct(rs));
+            }
+            return products;
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
             throw new RuntimeException("Database Error: Failed to fetch products layout dictionary.", ex);
         }
     }
 
     public List<Product> searchByName(String name) {
-        String sql = "SELECT id, name, price, stock, low_stock_threshold FROM products WHERE name LIKE ? ORDER BY name ASC";
+        String sql = "SELECT id, name, price, stock, low_stock_threshold, status FROM products WHERE name LIKE ? AND status=1 ORDER BY name ASC";
         List<Product> products = new ArrayList<>();
         try (Connection conn = DatabaseManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -49,9 +64,9 @@ public class ProductService {
 
     public List<Product> findLowStock(int threshold, int limit) {
         String sql = """
-                SELECT id, name, price, stock, low_stock_threshold
+                SELECT id, name, price, stock, low_stock_threshold, status
                 FROM products
-                WHERE stock <= ?
+                WHERE stock <= ? AND status=1
                 ORDER BY stock ASC, name ASC
                 LIMIT ?
                 """;
@@ -107,7 +122,8 @@ public class ProductService {
                 throw e;
             }
         } catch (SQLException ex) {
-            throw new RuntimeException("Database Error: Product creation transaction rolled back.", ex);
+            System.out.println(ex.getMessage());
+            throw new RuntimeException(ex.getMessage(), ex);//"Database Error: Product creation transaction rolled back."
         }
     }
 
@@ -172,24 +188,24 @@ public class ProductService {
         long id = rs.getLong("id");
         String name = rs.getString("name");
         double price = rs.getDouble("price");
-        long stock = rs.getLong("stock");
-        
+        long stock = rs.getLong("stock");        
         long thresholdVal = rs.getLong("low_stock_threshold");
         Long threshold = rs.wasNull() ? null : thresholdVal;
+        boolean status = rs.getInt("status") == 1;
 
-        // References our beautifully clean, 5-parameter Product model
-        return new Product(id, name, price, stock, threshold);
-    }
+        return new Product(id, name, price, stock, threshold, status);
+        
+        }
 
-    public void deleteProduct(long id, String name, long userId) {
-        String checkSalesSql = "SELECT COUNT(*) FROM sale_items WHERE product_id = ?";
-        String deleteSql = "DELETE FROM products WHERE id = ?";
+    public void deleteProduct(long id, String name, long userId, int status) {
+        String deleteSql = "UPDATE products SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
         
         try (Connection conn = DatabaseManager.getConnection()) {
             conn.setAutoCommit(false);
             
             try {
-                // 1. Referential Integrity Lock Check
+                /* this section is unnecessary since we are no longer deleting anything
+                1. Referential Integrity Lock Check
                 try (PreparedStatement psCheck = conn.prepareStatement(checkSalesSql)) {
                     psCheck.setLong(1, id);
                     try (ResultSet rs = psCheck.executeQuery()) {
@@ -197,17 +213,21 @@ public class ProductService {
                             throw new RuntimeException("Cannot delete: This product has historical sales records. Try setting stock to 0 instead.");
                         }
                     }
-                }
+                }*/
 
-                // 2. Execute Deletion
+                // 2. Execute change status from 1 to 0 instead of deleting
                 try (PreparedStatement psDelete = conn.prepareStatement(deleteSql)) {
-                    psDelete.setLong(1, id);
+                    psDelete.setInt(1,status);
+                    psDelete.setLong(2, id);
                     int affectedRows = psDelete.executeUpdate();
                     
                     if (affectedRows == 0) {
-                        throw new SQLException("Target product entry missing or already altered.");
+                        throw new SQLException("Target product entry missing or already inactive.");
                     }
                 }
+                    String action = (status == 1)
+                        ? "Restored product: "
+                        : "Deactivated product: ";         
 
                 // 3. Log using the identical transaction lane
                 activityLogService.log(conn, userId, "Deleted product: " + name + " (ID: " + id + ")");
@@ -218,7 +238,7 @@ public class ProductService {
                 throw e;
             }
         } catch (SQLException ex) {
-            throw new RuntimeException("Database Error: Product deletion sequence failed.", ex);
+            throw new RuntimeException("Failed, product remains active.", ex);
         }
     }
 }

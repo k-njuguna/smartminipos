@@ -45,7 +45,8 @@ public final class DatabaseManager {
                   stock INTEGER NOT NULL DEFAULT 0,
                   low_stock_threshold INTEGER DEFAULT NULL,
                   created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-                  updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+                  updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                  status INTEGER NOT NULL DEFAULT 1
                 )
             """);
 
@@ -128,44 +129,13 @@ public final class DatabaseManager {
             st.execute("CREATE TABLE IF NOT EXISTS activity_log (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, action TEXT NOT NULL, timestamp TEXT NOT NULL, FOREIGN KEY(user_id) REFERENCES users(id))");
             st.execute("CREATE TABLE IF NOT EXISTS app_settings (key TEXT PRIMARY KEY, value TEXT NOT NULL)");
 
-            handleSchemaMigrations(conn);
             
             st.execute("INSERT OR IGNORE INTO users(username,password,role) VALUES ('admin','" + PasswordUtil.hashPassword("admin@admin") + "','ADMIN')");
             st.execute("INSERT OR IGNORE INTO users(username,password,role) VALUES ('user','" + PasswordUtil.hashPassword("user123") + "','USER')");
             
-            migrateLegacyPlaintextPasswords(conn);
         } catch (SQLException ex) {
             throw new IllegalStateException("Failed to initialize DB schema", ex);
         }
     }
 
-    private static void handleSchemaMigrations(Connection conn) throws SQLException {
-        try (Statement st = conn.createStatement()) {
-            ResultSet rsProducts = st.executeQuery("PRAGMA table_info(products)");
-            boolean hasThreshold = false;
-            while (rsProducts.next()) {
-                if ("low_stock_threshold".equals(rsProducts.getString("name"))) hasThreshold = true;
-            }
-            if (!hasThreshold) { st.execute("ALTER TABLE products ADD COLUMN low_stock_threshold INTEGER DEFAULT NULL"); }
-
-        }
-    }
-
-    private static void migrateLegacyPlaintextPasswords(Connection conn) throws SQLException {
-        String selectSql = "SELECT id, password FROM users";
-        String updateSql = "UPDATE users SET password = ? WHERE id = ?";
-        try (PreparedStatement selectPs = conn.prepareStatement(selectSql);
-             ResultSet rs = selectPs.executeQuery();
-             PreparedStatement updatePs = conn.prepareStatement(updateSql)) {
-            while (rs.next()) {
-                long id = rs.getLong("id");
-                String password = rs.getString("password");
-                if (!PasswordUtil.isHashed(password)) {
-                    updatePs.setString(1, PasswordUtil.hashPassword(password));
-                    updatePs.setLong(2, id);
-                    updatePs.executeUpdate();
-                }
-            }
-        }
-    }
 }

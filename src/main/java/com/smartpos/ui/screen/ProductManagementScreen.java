@@ -144,6 +144,23 @@ public class ProductManagementScreen {
 
         table.getColumns().addAll(cName, cPrice, cStock);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    
+        //new sectuib
+        table.setRowFactory(tv -> new TableRow<Product>() {
+        @Override
+        protected void updateItem(Product product, boolean empty) {
+            super.updateItem(product, empty);
+            if (empty || product == null) {
+                setStyle("");
+            } else {
+                if (!product.isActive()) {
+                    setStyle("-fx-background-color: #e0e0e0; -fx-text-fill: #7f8c8d;");
+                } else {
+                    setStyle("");
+                }
+            }
+        }
+    });
     }
 
     public void refresh() {
@@ -213,8 +230,21 @@ public class ProductManagementScreen {
                 }
                 
                 deleteBtn.setVisible(true);
+                if (p.isActive()) {
+                    deleteBtn.setText("Deactivate Product");
+                    deleteBtn.setStyle("-fx-text-fill: white; -fx-background-color: #c0392b; -fx-font-weight: bold;");
+                } else {
+                    deleteBtn.setText("Restore Product");
+                    deleteBtn.setStyle("-fx-text-fill: white; -fx-background-color: #27ae60; -fx-font-weight: bold;");
+                }
+
                 feedback.setText("Status Mode: Modifying Product ID #" + p.getId());
                 feedback.setTextFill(Color.BLUE);
+                /*
+                deleteBtn.setVisible(true);
+                feedback.setText("Status Mode: Modifying Product ID #" + p.getId());
+                feedback.setTextFill(Color.BLUE);
+                */
             }
         }
 
@@ -260,7 +290,7 @@ public class ProductManagementScreen {
                 feedback.setText("Validation Failure: Ensure price, stock, and threshold are numeric format strings.");
                 feedback.setTextFill(Color.RED);
             } catch (Exception ex) {
-                feedback.setText("Error Encountered: " + ex.getMessage());
+                feedback.setText("Error Encountered\n: " + ex.getMessage());
                 feedback.setTextFill(Color.RED);
             }
         }
@@ -269,28 +299,53 @@ public class ProductManagementScreen {
             if (currentProduct == null) return;
 
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            if (currentProduct.isActive()) {
+                alert.setTitle("Confirm Deactivation");
+                alert.setHeaderText("Deactivate '" + currentProduct.getName() + "'?");
+                alert.setContentText("The product will no longer appear for sales but can be restored later.");
+            } else {
+                alert.setTitle("Confirm Restore");
+                alert.setHeaderText("Restore '" + currentProduct.getName() + "'?");
+                alert.setContentText("The product will become available for sale again.");
+            }
+            /*            
             alert.setTitle("Confirm Deletion");
             alert.setHeaderText("Permanently remove '" + currentProduct.getName() + "'?");
             alert.setContentText("This action changes storage parameters and cannot be undone.");
+            */
 
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 try {
-                    context.productService().deleteProduct(
-                        currentProduct.getId(), 
-                        currentProduct.getName(), 
-                        context.currentUser().id()
-                    );
+                    if (currentProduct.isActive()) {
+                        context.productService().deleteProduct(
+                            currentProduct.getId(), 
+                            currentProduct.getName(), 
+                            context.currentUser().id(),
+                            0                                
+                        );
+                        feedback.setText("System Notification: Product deactivated successfully.");
+                        feedback.setTextFill(Color.RED);
+                    } else {
+                        context.productService().deleteProduct(
+                            currentProduct.getId(), 
+                            currentProduct.getName(), 
+                            context.currentUser().id(),
+                            1                                    
+                        );
+                        feedback.setText("System Notification: Product restored successfully.");
+                        feedback.setTextFill(Color.GREEN);
+                    }
                     table.getSelectionModel().clearSelection();
                     refresh();
                     loadProduct(null); // Fallback cleanly straight back to initialization mode
-                    feedback.setText("System Notification: Product record deleted completely.");
-                    feedback.setTextFill(Color.RED);
                 } catch (Exception ex) {
-                    feedback.setText("Deletion Aborted: " + ex.getMessage());
+                    feedback.setText("Operation Aborted\n: " + ex.getMessage());
                     feedback.setTextFill(Color.RED);
                 }
+
             }
         }
     }
-}
+    }
+

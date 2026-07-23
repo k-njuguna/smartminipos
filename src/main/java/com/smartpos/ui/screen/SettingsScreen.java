@@ -142,7 +142,7 @@ public class SettingsScreen {
         VBox col3 = createStyledColumn("POS Configuration");
         
         VBox buttonsBox = new VBox(5);
-        List<Product> products = context.productService().findAll();
+        List<Product> products = context.productService().findActive();
         
         StringConverter<Product> productConverter = new StringConverter<>() {
             @Override public String toString(Product p) { return p == null ? "" : p.getName(); }
